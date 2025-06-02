@@ -27,15 +27,19 @@ jobs:
           - "15_cron"
     steps:
       - uses: actions/checkout@v4
+
+      # ↓ Crea OWNER_LC con minúsculas
+      - name: Set lowercase owner
+        run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
-        with:
-          buildkitd-flags: --debug
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.REGISTRY_TOKEN }}
+
       - uses: docker/build-push-action@v6
         with:
           context: ./postgres
@@ -43,5 +47,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/yolks:postgres_${{ matrix.tag }}
-            ${{ github.repository_owner == 'pelican-eggs' && format('ghcr.io/parkervcp/yolks:postgres_{0}', matrix.tag) || '' }}
+            ghcr.io/${{ env.OWNER_LC }}/yolks:postgres_${{ matrix.tag }}
+            ${{ env.OWNER_LC == 'pelican-eggs' && format('ghcr.io/parkervcp/yolks:postgres_{0}', matrix.tag) || '' }}
