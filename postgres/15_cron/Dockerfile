@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
+      netcat-openbsd \
       tini \
       curl \
       iproute2 \
@@ -20,12 +21,13 @@ RUN apt-get update \
       sqlite3 \
       tar \
       tzdata \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd -d /home/container -m container -s /bin/bash
 
-RUN useradd -m -u 999 -d /home/container -s /usr/sbin/nologin container
-
-USER container
+USER  container
+ENV USER=container HOME=/home/container
 WORKDIR /home/container
+
 STOPSIGNAL SIGINT
 
 COPY --chown=container:container ../entrypoint.sh /entrypoint.sh
