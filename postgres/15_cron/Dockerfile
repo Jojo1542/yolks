@@ -1,7 +1,7 @@
 # ----------------------------------
 # Environment: Postgres DB + cron
 # ----------------------------------
-FROM --platform=$TARGETOS/$TARGETARCH jojo1542/postgres_cron:15
+FROM --platform=$TARGETOS/$TARGETARCH ghcr.io/jojo1542/postgres_cron:15
 
 LABEL maintainer="Parker <parker@pterodactyl.io>"
 
